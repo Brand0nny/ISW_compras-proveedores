@@ -1,0 +1,9 @@
+package com.isw.compras_proveedores.controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/Reporte")
+public class ReporteController {
+
+}
