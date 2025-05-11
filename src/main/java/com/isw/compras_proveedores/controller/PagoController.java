@@ -28,4 +28,8 @@ PagoService pagoService;
             return ResponseEntity.badRequest().build();
         }
     }
+    @GetMapping("/")
+    public ResponseEntity<Iterable<Pago>> getPagos(){
+        return ResponseEntity.ok(pagoService.getPagos());
+    }
 }

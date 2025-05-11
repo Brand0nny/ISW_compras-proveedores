@@ -2,6 +2,7 @@ package com.isw.compras_proveedores.model;
 
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import java.util.Date;
 
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-
+@Table(name = "generacionreporte")
 public class GeneracionReporte {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)

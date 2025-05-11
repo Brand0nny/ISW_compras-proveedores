@@ -9,5 +9,8 @@ public enum State{
     CANCELADA,
     RECHAZADA,
     PAGADA,
-    GENERADA
+    GENERADA,
+    GASTO,
+    ACTIVO,
+    CERRADO
 }

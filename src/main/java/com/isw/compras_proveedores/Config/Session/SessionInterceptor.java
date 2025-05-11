@@ -10,28 +10,31 @@ import jakarta.servlet.http.HttpSession;
 public class SessionInterceptor implements HandlerInterceptor{
 
     @Override
-    public boolean preHandle(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull Object handler)
-            throws Exception {
-                HttpSession session = request.getSession(false);
-                if (session != null) {
-                    Object usuario = session.getAttribute("usuario");
-                    if (usuario != null) {
-                        SessionContext.setUsuarioActual(usuario);
-                        return true;
-                    }
-                }
-            
-                // Excepciones: permitir login y register sin sesión
-                String uri = request.getRequestURI();
-                if (uri.contains("/login") || uri.contains("/register")) {
-                    return true;
-                }
-            
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("No autorizado: sesión inválida o inexistente.");
-                return false;
+    public boolean preHandle(@Nonnull HttpServletRequest request,
+                             @Nonnull HttpServletResponse response,
+                             @Nonnull Object handler) throws Exception {
+        // 1) Deja pasar todos los OPTIONS (preflight CORS)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
+        // 2) Si ya hay sesión y atributo "usuario", continúa
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("usuario") != null) {
+            SessionContext.setUsuarioActual(session.getAttribute("usuario"));
+            return true;
+        }
+
+        // 3) Excepciones: login y register no requieren sesión
+        String uri = request.getRequestURI();
+        if (uri.contains("/login") || uri.contains("/register")) {
+            return true;
+        }
+
+        // 4) Si no cumple nada de lo anterior, rechaza
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("No autorizado: sesión inválida o inexistente.");
+        return false;
     }
-
-
 }
 

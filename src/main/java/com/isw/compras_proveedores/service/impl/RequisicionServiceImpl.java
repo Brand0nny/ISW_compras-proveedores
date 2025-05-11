@@ -32,12 +32,12 @@ public class RequisicionServiceImpl implements RequisicionService{
     ProveedorRepository proveedorRepository;
 
     @Override
-    public Boolean registerRequisicion(Requisicion requisicion) {
+    public Requisicion registerRequisicion(Requisicion requisicion) {
         requisicion.setRequestDate(new Date());
         requisicion.setStatus(State.PENDIENTE.name());
-        requisicionRepository.save(requisicion);
-        return true;
-    }
+        return requisicionRepository.save(requisicion);
+        
+    }   
 
     @Override
     public Boolean deleteRequisicion(Long requisicionId) {
@@ -89,7 +89,10 @@ public class RequisicionServiceImpl implements RequisicionService{
     public Iterable<Requisicion> getRequisicionesPendientes() {
     return requisicionRepository.findByStatus(State.PENDIENTE.name());
 }
-
+    @Override
+    public Iterable<Requisicion> getRequisicionesPorEstado(String status){
+        return requisicionRepository.findByStatus(status);
+    }
     @Override
     public OrdenCompra aproveOrdenRequisicion(Long id, Long proveedor, String user) {
         Optional<Requisicion> requisicionOptional = requisicionRepository.findById(id);
@@ -99,7 +102,7 @@ public class RequisicionServiceImpl implements RequisicionService{
             StringBuilder sb = new StringBuilder();
             String s = proveedor + user + requisicionOptional.get().getCenterCost();
             OrdenCompra ordenGenerada = new OrdenCompra();
-            ordenGenerada.setStatus(State.EN_PROCESO.name());
+            ordenGenerada.setStatus(State.PENDIENTE.name());
             ordenGenerada.setRequisicion(requisicionOptional.get());
             Proveedor prov = proveedorRepository.findById(proveedor)
             .orElseThrow(() -> new IllegalArgumentException("Proveedor no encontrado"));
@@ -119,11 +122,55 @@ public class RequisicionServiceImpl implements RequisicionService{
             }
 
             ordenGenerada.setDetalles(detalleOrden);
-
+            Requisicion requisicion = requisicionOptional.get();
+            requisicion.setStatus(State.APROBADA.name());
+            requisicionRepository.save(requisicion);
             return ordenCompraRepository.save(ordenGenerada);
          }
          return null;
         
     }
 
+    @Override
+    public List<Requisicion> getLatestRequestRequisiciones() {
+        return requisicionRepository.findAllByOrderByRequestDateDesc();
+        
+    } @Override
+    public List<Requisicion> getTop5LatestRequestRequisiciones() {
+        return requisicionRepository.findTop5ByOrderByRequestDateDesc();
+
+    }
+
+    @Override
+    public List<Requisicion> getLatestRequiredRequisiciones() {
+        return requisicionRepository.findAllByOrderByRequiredDateDesc();
+        
+    }
+
+    @Override
+    public List<Requisicion> getTop5LatestRequiredRequisiciones() {
+        return requisicionRepository.findTop5ByOrderByRequiredDateDesc();
+
+    }
+    @Override
+    public Long countByStatus(String status) {
+        return requisicionRepository.countByStatus(status);
+    }
+
+    @Override
+    public Requisicion setStateOrdenRequisicion(Long id, String status) {
+        Optional<Requisicion> requisicionOptional = requisicionRepository.findById(id);
+        Requisicion requisicion = requisicionOptional.get();
+        requisicion.setStatus(status);
+        return requisicionRepository.save(requisicion);
+    }
+
+    @Override
+    public List<Requisicion> getRequisicionesDesc() {
+        return requisicionRepository.findAllByOrderByRequisicionIdDesc();
+    }
+    @Override
+    public List<Requisicion> getRequisicionesStatusDesc(String status) {
+        return requisicionRepository.findByStatusOrderByRequisicionIdDesc(status);
+    }
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name="proveedor")
 public class Proveedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,11 +43,18 @@ public class Proveedor {
     private String accountNumber;
     @NotBlank
     private String clabe;
-    @NotBlank
+    @NotBlank   
     private String accountHolder;
     @NotBlank
     private String paymentMethod;
-    
+    @NotBlank
+    private String category;      
+    @NotBlank
+    private String address;
+    @NotBlank
+    private String city;
+    @NotBlank
+    private String country;
     @OneToMany(mappedBy = "proveedor", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<EvaluacionCalidad> evaluaciones;
@@ -136,6 +145,38 @@ public class Proveedor {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
 }

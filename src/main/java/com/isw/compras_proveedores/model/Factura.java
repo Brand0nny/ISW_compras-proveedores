@@ -2,11 +2,17 @@ package com.isw.compras_proveedores.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
+@Table(name="factura")
 public class Factura {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +43,11 @@ public class Factura {
     //relaciones
     @OneToOne
     @JoinColumn(name = "FK_orden_compra_id")
+    @JsonBackReference
     private OrdenCompra ordenCompra;
 
-    @OneToOne(mappedBy = "factura")
+    @OneToOne(mappedBy = "factura", fetch = FetchType.LAZY)
+    @JsonManagedReference 
     private Pago pago;
 
     public Long getFacturaId() {

@@ -1,5 +1,6 @@
 package com.isw.compras_proveedores.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +55,30 @@ public class ProveedorServiceImpl implements ProveedorService {
             viejo.setEvaluaciones(nuevoProveedor.getEvaluaciones());
             viejo.setEvaluationScore(nuevoProveedor.getEvaluationScore());
             viejo.setEmail(nuevoProveedor.getEmail());
+            viejo.setPaymentMethod(nuevoProveedor.getPaymentMethod());
+            viejo.setAccountHolder(nuevoProveedor.getAccountHolder());
+            viejo.setAccountNumber(nuevoProveedor.getAccountNumber());
+            viejo.setAddress(nuevoProveedor.getAddress());
+            viejo.setBankName(nuevoProveedor.getBankName());
+            viejo.setCity(nuevoProveedor.getCity());
+            viejo.setClabe(nuevoProveedor.getClabe());
+            viejo.setCountry(nuevoProveedor.getCountry());
+            viejo.setCategory(nuevoProveedor.getCategory());
             return proveedorRepository.save(viejo);
         } else {
             throw new RuntimeException("Proveedor no encontrado");
         }
-    
-
 }
+    @Override
+    public List<Proveedor> getProveedoresByCategory(String category) {
+        return proveedorRepository.findByCategory(category);
+    }
+    @Override
+    public List<Proveedor> getTopProveedores() {
+        return proveedorRepository.findAllByOrderByEvaluationScoreDesc();
+    }
+    @Override
+    public List<String> getCategoriasDistintas(){
+        return proveedorRepository.findDistinctCategory();
+    }
 }

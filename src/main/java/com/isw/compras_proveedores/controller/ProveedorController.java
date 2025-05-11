@@ -1,10 +1,13 @@
 package com.isw.compras_proveedores.controller;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,7 +52,7 @@ public class ProveedorController {
             }
         }
     
-    @PostMapping("{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Proveedor> updateProveedor(@PathVariable Long id, @RequestBody Proveedor proveedor){
         UsuarioAutenticado.validarRol("ADMIN_PROVEEDORES","ADMIN");
         try{
@@ -59,5 +62,17 @@ public class ProveedorController {
             return ResponseEntity.badRequest().build();
         }
 
+    }
+    @GetMapping("/categorias")
+    public ResponseEntity<List<String>> getCategorias() {
+        return ResponseEntity.ok(proveedorService.getCategoriasDistintas());
+    }
+    @GetMapping("/por-categoria/{category}")
+    public ResponseEntity<List<Proveedor>> getProveedoresByCategory(@PathVariable String category){
+        return ResponseEntity.ok(proveedorService.getProveedoresByCategory(category));
+    }
+    @GetMapping("/top")
+    public ResponseEntity<List<Proveedor>> getProveedoresTop(){
+        return ResponseEntity.ok(proveedorService.getTopProveedores());
     }
 }

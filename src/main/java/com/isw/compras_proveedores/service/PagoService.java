@@ -8,4 +8,5 @@ public interface PagoService {
     public Pago pagarFactura(Long facturaId, BigDecimal paymentAmount);
     public void aprobarPago(Long id);
     public void rechazarPago(Long id);
+    public Iterable<Pago> getPagos();
 }
